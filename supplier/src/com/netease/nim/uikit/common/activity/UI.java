@@ -1,12 +1,13 @@
 package com.netease.nim.uikit.common.activity;
 
 import android.annotation.TargetApi;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
+
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -227,7 +228,7 @@ public abstract class UI extends AppCompatActivity {
     public List<TFragment> addFragments(List<TFragment> fragments) {
         List<TFragment> fragments2 = new ArrayList<TFragment>(fragments.size());
 
-        FragmentManager fm = getSupportFragmentManager();
+        FragmentManager fm = getFragmentManager();
         FragmentTransaction transaction = fm.beginTransaction();
 
         boolean commit = false;
@@ -264,7 +265,7 @@ public abstract class UI extends AppCompatActivity {
     }
 
     protected TFragment switchContent(TFragment fragment, boolean needAddToBackStack) {
-        FragmentManager fm = getSupportFragmentManager();
+        FragmentManager fm = getFragmentManager();
         FragmentTransaction fragmentTransaction = fm.beginTransaction();
         fragmentTransaction.replace(fragment.getContainerId(), fragment);
         if (needAddToBackStack) {
@@ -299,12 +300,12 @@ public abstract class UI extends AppCompatActivity {
     }
 
     private void invokeFragmentManagerNoteStateNotSaved() {
-        FragmentManager fm = getSupportFragmentManager();
+        FragmentManager fm = getFragmentManager();
         ReflectionUtil.invokeMethod(fm, "noteStateNotSaved", null);
     }
 
     protected void switchFragmentContent(TFragment fragment) {
-        FragmentManager fm = getSupportFragmentManager();
+        FragmentManager fm = getFragmentManager();
         FragmentTransaction transaction = fm.beginTransaction();
         transaction.replace(fragment.getContainerId(), fragment);
         try {

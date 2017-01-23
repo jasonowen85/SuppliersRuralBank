@@ -1,10 +1,15 @@
 package com.netease.nim.uikit.session.module.input;
 
 import android.app.Activity;
+import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Handler;
 import android.os.SystemClock;
+import android.support.v13.app.FragmentCompat;
+import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextUtils;
@@ -25,6 +30,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.alibaba.fastjson.JSONObject;
+import com.grgbanking.ruralsupplier.common.util.PermissionUtils;
 import com.netease.nim.uikit.NimUIKit;
 import com.grgbanking.ruralsupplier.R;
 import com.netease.nim.uikit.common.ui.dialog.EasyAlertDialogHelper;
@@ -35,6 +41,7 @@ import com.netease.nim.uikit.session.actions.BaseAction;
 import com.netease.nim.uikit.session.emoji.EmoticonPickerView;
 import com.netease.nim.uikit.session.emoji.IEmoticonSelectedListener;
 import com.netease.nim.uikit.session.emoji.MoonUtil;
+import com.netease.nim.uikit.session.fragment.MessageFragment;
 import com.netease.nim.uikit.session.module.Container;
 import com.netease.nimlib.sdk.NIMClient;
 import com.netease.nimlib.sdk.media.record.AudioRecorder;
@@ -85,6 +92,7 @@ public class InputPanel implements IEmoticonSelectedListener, IAudioRecordCallba
 
     // 语音
     protected AudioRecorder audioMessageHelper;
+    private Fragment mFragment;
     private Chronometer time;
     private TextView timerTip;
     private LinearLayout timerTipContainer;
@@ -114,6 +122,9 @@ public class InputPanel implements IEmoticonSelectedListener, IAudioRecordCallba
 
     public InputPanel(Container container, View view, List<BaseAction> actions) {
         this(container, view, actions, true);
+    }
+    public void setFatherFragment(MessageFragment fragment){
+        mFragment = fragment;
     }
 
     public void onPause() {
@@ -563,7 +574,30 @@ public class InputPanel implements IEmoticonSelectedListener, IAudioRecordCallba
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
                     touched = true;
                     initAudioRecord();
-                    onStartAudioRecord();
+
+                    if (Build.VERSION.SDK_INT >= 23) {
+                        //录音权限；这里需要 写入权限  双权限
+                        if (ContextCompat.checkSelfPermission(container.activity, PermissionUtils.PERMISSION_RECORD_AUDIO) ==
+                                PackageManager.PERMISSION_DENIED) {
+                            if (ContextCompat.checkSelfPermission(container.activity, PermissionUtils.PERMISSION_READ_EXTERNAL_STORAGE) ==
+                                    PackageManager.PERMISSION_DENIED) {
+                                FragmentCompat.requestPermissions(mFragment,
+                                        new String[]{PermissionUtils.PERMISSION_RECORD_AUDIO, PermissionUtils.PERMISSION_READ_EXTERNAL_STORAGE}
+                                        , PermissionUtils.CODE_RECORD_AUDIO);
+                            } else {
+                                FragmentCompat.requestPermissions(mFragment,
+                                        new String[]{PermissionUtils.PERMISSION_RECORD_AUDIO}
+                                        , PermissionUtils.CODE_RECORD_AUDIO);
+                            }
+
+                        } else {
+                            onStartAudioRecord();
+                        }
+
+                    } else {
+                        onStartAudioRecord();
+                    }
+
                 } else if (event.getAction() == MotionEvent.ACTION_CANCEL
                         || event.getAction() == MotionEvent.ACTION_UP) {
                     touched = false;
@@ -576,6 +610,10 @@ public class InputPanel implements IEmoticonSelectedListener, IAudioRecordCallba
                 return false;
             }
         });
+    }
+
+    public void startRecordAudio() {
+        onStartAudioRecord();
     }
 
     // 上滑取消录音判断

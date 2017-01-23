@@ -2,7 +2,10 @@ package com.grgbanking.ruralsupplier.main.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
@@ -30,6 +33,7 @@ import com.baidu.mapapi.search.geocode.ReverseGeoCodeResult;
 import com.baidu.mapapi.utils.CoordinateConverter;
 import com.grgbanking.ruralsupplier.R;
 import com.grgbanking.ruralsupplier.api.ServerApi;
+import com.grgbanking.ruralsupplier.common.util.PermissionUtils;
 import com.grgbanking.ruralsupplier.config.preference.Preferences;
 import com.grgbanking.ruralsupplier.login.LoginActivity;
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -78,6 +82,16 @@ public class SignInActivity extends UI {
         //id = "11";
         LogUtil.e("SignInActivity","id=="+id);
         initView();
+
+        //定位权限 确认一下；
+        if (Build.VERSION.SDK_INT >= 23) {
+            //请求定位权限；
+            String[] perms = {PermissionUtils.PERMISSION_ACCESS_COARSE_LOCATION, PermissionUtils.PERMISSION_ACCESS_FINE_LOCATION};
+            if(PermissionUtils.lacksPermissions(this, perms)){
+                ActivityCompat.requestPermissions(SignInActivity.this, perms, PermissionUtils.CODE_ACCESS_FINE_LOCATION);
+            }
+
+        }
     }
 
     private void initView() {
@@ -261,6 +275,25 @@ public class SignInActivity extends UI {
             reverseGeoCode(latLng);
         }
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    /**
+     * Callback received when a permissions request has been completed.
+     */
+    @Override
+    public void onRequestPermissionsResult(int permsRequestCode, String[] permissions, int[] grantResults){
+        switch(permsRequestCode) {
+            case PermissionUtils.CODE_ACCESS_FINE_LOCATION:
+                boolean cameraAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
+                if (cameraAccepted) {
+                    //
+                } else {
+                    PermissionUtils.confirmActivityPermission(this, permissions,
+                            PermissionUtils.CODE_ACCESS_FINE_LOCATION, getString(R.string.location), false);
+//                    Toast.makeText(SignInActivity.this, "请到设置界面 开启 定位权限", Toast.LENGTH_SHORT).show();
+                }
+                break;
+        }
     }
 
     /**

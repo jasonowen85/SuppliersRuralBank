@@ -79,7 +79,7 @@ android {
 }
 
 dependencies {
-    compile fileTree(include: '*.jar', dir: 'libs')
+    compile fileTree(dir: 'libs', include: '*.jar')
     compile files('libs/android-async-http-1.4.6.jar')
     compile files('libs/BaiduLBS_Android.jar')
     compile 'com.google.code.gson:gson:2.4'
@@ -94,4 +94,5 @@ dependencies {
     compile 'com.google.android.gms:play-services-appindexing:8.1.0'
     compile 'com.tencent.bugly:crashreport:latest.release'
     compile files('libs/eventbus.jar')
+    compile 'com.android.support:support-v13:23.0.0'
 }

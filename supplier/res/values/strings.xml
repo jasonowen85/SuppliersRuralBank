@@ -257,6 +257,15 @@
     <string name="workorder_step18"><Data><![CDATA[客户评价<font color="#499BF7"><b>%1$s</b></font>]]></Data></string>
     <string name="copyright">Copyright ©2014&#8211;2016 深圳合众鹏派版权所有</string>
 
+    <string name="helps">帮助</string>
+    <string name="quit">退出</string>
+    <string name="settings">设置</string>
+    <string name="string_help_text">权限没有被授权 无法正常使用 \n请点击 "设置"-"权限"-打开所需权限</string>
+    <string name="camera">相机</string>
+    <string name="recordAudio">录音</string>
+    <string name="callphone">打电话</string>
+    <string name="readSDcard">读取存储卡</string>
+    <string name="location">定位</string>
 
     <string name="address_tuning">地点微调</string>
     <string name="confirm_sign_in">确认签到</string>

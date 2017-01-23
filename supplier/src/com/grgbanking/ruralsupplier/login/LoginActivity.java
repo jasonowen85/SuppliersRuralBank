@@ -5,7 +5,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextUtils;
@@ -28,6 +30,7 @@ import com.grgbanking.ruralsupplier.api.ServerApi;
 import com.grgbanking.ruralsupplier.common.bean.userRole;
 import com.grgbanking.ruralsupplier.common.dialog.CommonDialog;
 import com.grgbanking.ruralsupplier.common.dialog.DialogHelper;
+import com.grgbanking.ruralsupplier.common.util.PermissionUtils;
 import com.grgbanking.ruralsupplier.config.preference.Preferences;
 import com.grgbanking.ruralsupplier.config.preference.UserPreferences;
 import com.grgbanking.ruralsupplier.main.activity.ForgetpasswordActivity;
@@ -52,6 +55,9 @@ import org.apache.http.Header;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * 登录/注册界面
  * <p>
@@ -60,6 +66,7 @@ import org.json.JSONObject;
 public class LoginActivity extends UI implements OnKeyListener {
 
     private static final String TAG = LoginActivity.class.getSimpleName();
+    private static final int PERMISSION_REQUEST_CODE = 1003;
     private static final String KICK_OUT = "KICK_OUT";
     public userRole[] userRoles;
     public CharSequence[] userRolenames;
@@ -98,7 +105,19 @@ public class LoginActivity extends UI implements OnKeyListener {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login_activity);
-
+        if (Build.VERSION.SDK_INT >= 23) {
+            if(PermissionUtils.lacksPermissions(this, PermissionUtils.requestPermissions)){
+                List<String> requestPermission = new ArrayList<String>();
+                for(String permission : PermissionUtils.requestPermissions) {
+                    if(PermissionUtils.lacksPermission(this,permission)){
+                        requestPermission.add(permission);
+                    }
+                }
+                ActivityCompat.requestPermissions(this,
+                        requestPermission.toArray(new String[requestPermission.size()]), PERMISSION_REQUEST_CODE); // 请求权限
+                requestPermission.clear();
+            }
+        }
         ToolBarOptions options = new ToolBarOptions();
         options.isNeedNavigate = false;
         options.logoId = R.drawable.actionbar_white_logo_space;
@@ -132,14 +151,14 @@ public class LoginActivity extends UI implements OnKeyListener {
         }
     }
 
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) { // 按下的如果是BACK，同时没有重复
-            return true;
-        }
-
-        return super.onKeyDown(keyCode, event);
-    }
+//    @Override
+//    public boolean onKeyDown(int keyCode, KeyEvent event) {
+//        if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) { // 按下的如果是BACK，同时没有重复
+//            return true;
+//        }
+//
+//        return super.onKeyDown(keyCode, event);
+//    }
 
 
     /**
