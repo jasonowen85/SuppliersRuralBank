@@ -65,6 +65,7 @@ public class UPlayer implements IVoiceManager, MediaPlayer.OnCompletionListener,
         Message msg = mHandler.obtainMessage();
         msg.what = 1;
         mHandler.sendMessage(msg);
+        stop();
     }
 
     @Override
