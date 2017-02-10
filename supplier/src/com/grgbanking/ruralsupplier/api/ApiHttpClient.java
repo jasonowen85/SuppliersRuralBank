@@ -105,7 +105,7 @@ public class ApiHttpClient {
 
     public static void post(String partUrl, RequestParams params, AsyncHttpResponseHandler handler) {
         client.post(getAbsoluteApiUrl(partUrl), params, handler);
-        log(new StringBuilder("POST ").append(partUrl).append("&").append(params).toString());
+        log(new StringBuilder("POST ").append(getAbsoluteApiUrl(partUrl)).append("?").append(params).toString());
     }
 
     public static void post2(String partUrl, RequestParams params, AsyncHttpResponseHandler handler) {
