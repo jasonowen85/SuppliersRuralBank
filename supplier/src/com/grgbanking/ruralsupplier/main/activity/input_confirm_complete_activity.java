@@ -79,6 +79,10 @@ public class input_confirm_complete_activity extends UI {
         options.titleId = R.string.confirm_complete;
         setToolBar(R.id.toolbar, options);
         urllist = new ArrayList<String>();
+        if(null != Bimp.tempSelectBitmap){
+            Bimp.tempSelectBitmap.clear();
+        }
+
         getParams();
         InitView();
 
