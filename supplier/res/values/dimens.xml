@@ -65,5 +65,9 @@
     <dimen name="message_bubble_basic_margin">5dip</dimen>
 
     <dimen name="message_music_size">60dip</dimen>
+    <dimen name="margin_20dp">20dip</dimen>
+    <dimen name="margin_10dp">10dip</dimen>
+    <dimen name="margin_30dp">30dip</dimen>
+    <dimen name="margin_5dp">5dip</dimen>
 
 </resources>

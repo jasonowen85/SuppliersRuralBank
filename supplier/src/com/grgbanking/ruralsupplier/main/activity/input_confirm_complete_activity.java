@@ -2,12 +2,16 @@ package com.grgbanking.ruralsupplier.main.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.view.Gravity;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -29,12 +33,14 @@ import com.grgbanking.ruralsupplier.common.photo.utils.Bimp;
 import com.grgbanking.ruralsupplier.common.photo.utils.BitmapUtils;
 import com.grgbanking.ruralsupplier.common.photo.utils.FileUtils;
 import com.grgbanking.ruralsupplier.common.photo.view.NoScrollGridView;
+import com.grgbanking.ruralsupplier.common.util.PermissionUtils;
 import com.grgbanking.ruralsupplier.common.util.sys.ImageUtils;
 import com.grgbanking.ruralsupplier.config.preference.Preferences;
 import com.grgbanking.ruralsupplier.login.LoginActivity;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.netease.nim.uikit.common.activity.UI;
+import com.netease.nim.uikit.common.util.log.LogUtil;
 import com.netease.nim.uikit.common.util.string.StringUtil;
 import com.netease.nim.uikit.model.ToolBarOptions;
 
@@ -209,7 +215,16 @@ public class input_confirm_complete_activity extends UI {
             menuWindow.dismiss();
             switch (v.getId()) {
                 case R.id.item_popupwindows_camera:        //点击拍照按钮
-                    goCamera();
+                    if (Build.VERSION.SDK_INT >= 23) {
+                        String[] perms = {"android.permission.CAMERA"};
+                        if (PermissionUtils.lacksPermissions(input_confirm_complete_activity.this, perms)) {
+                            ActivityCompat.requestPermissions(input_confirm_complete_activity.this, perms, PermissionUtils.CODE_CAMERA);
+                        } else {
+                            goCamera();
+                        }
+                    } else {
+                        goCamera();
+                    };
                     break;
                 case R.id.item_popupwindows_Photo:       //点击从相册中选择按钮
                     Intent intent = new Intent(instence,
@@ -221,6 +236,33 @@ public class input_confirm_complete_activity extends UI {
             }
         }
     };
+
+    /**
+     * Callback received when a permissions request has been completed.
+     */
+    @Override
+    public void onRequestPermissionsResult(int permsRequestCode, String[] permissions, int[] grantResults){
+        switch(permsRequestCode) {
+            case PermissionUtils.CODE_CAMERA:
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    //开始调用摄像头
+                    goCamera();
+                } else if (grantResults[0] == PackageManager.PERMISSION_DENIED) {//第一次点击拒绝授权
+                    PermissionUtils.confirmActivityPermission(this, permissions, PermissionUtils.CODE_CAMERA, getString(R.string.camera),false);
+                }
+                break;
+            case PermissionUtils.CODE_READ_EXTERNAL_STORAGE:
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Intent intent = new Intent(instence,
+                            AlbumActivity.class);
+                    startActivity(intent);
+                } else {
+                    PermissionUtils.confirmActivityPermission(this,new String[]{PermissionUtils.PERMISSION_READ_EXTERNAL_STORAGE},
+                            PermissionUtils.CODE_READ_EXTERNAL_STORAGE, getString(R.string.readSDcard),true);
+                }
+                break;
+        }
+    }
 
     private void confirmComplete() {
 

@@ -29,7 +29,7 @@ import java.util.TimerTask;
  */
 public class LocationServices extends Service {
     //定位间隔时间(毫秒)
-    private static final long SLEEPTIME = 5*1000*60;
+    private static final long SLEEPTIME = 10*1000*60;
     private WakeLockUtil wakeLockUtil;
     //定位点信息
     public LatLng latlng;
