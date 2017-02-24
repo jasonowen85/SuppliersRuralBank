@@ -190,23 +190,8 @@ public class MessageFragment extends TFragment implements ModuleProxy {
         switch(requestCode) {
             case PermissionUtils.CODE_RECORD_AUDIO:
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    if (ContextCompat.checkSelfPermission(getActivity(), PermissionUtils.PERMISSION_WRITE_EXTERNAL_STORAGE) ==
-                            PackageManager.PERMISSION_DENIED) {
-                        PermissionUtils.confirmActivityPermission(getActivity(), new String[]{PermissionUtils.PERMISSION_WRITE_EXTERNAL_STORAGE},
-                                PermissionUtils.CODE_RECORD_AUDIO, getString(R.string.readSDcard), false);
-                    } else {//开始录音
-//                        inputPanel.startRecordAudio();
-                    }
-                } else {
-                    if (ContextCompat.checkSelfPermission(getActivity(), PermissionUtils.PERMISSION_WRITE_EXTERNAL_STORAGE) ==
-                            PackageManager.PERMISSION_DENIED) {
-                        //重新申请 sd 录音权限
-                        PermissionUtils.confirmActivityPermission(getActivity(), permissions, PermissionUtils.CODE_RECORD_AUDIO, getString(R.string.recordAudio), false);
-                    } else {
-                        //只申请  录音权限
-                        PermissionUtils.confirmActivityPermission(getActivity(), new String[]{PermissionUtils.PERMISSION_RECORD_AUDIO},
-                                PermissionUtils.CODE_RECORD_AUDIO, getString(R.string.recordAudio), false);
-                    }
+                    //申请  录音权限
+                    PermissionUtils.confirmFragmentPermission(this, permissions, PermissionUtils.CODE_RECORD_AUDIO, getString(R.string.recordAudio));
                 }
                 break;
 

@@ -398,6 +398,8 @@ public class LoginActivity extends UI implements OnKeyListener {
     };
 
     private void getRoles(String userId) {
+        if(TextUtils.isEmpty(loginAccountEdit.getText())) return;
+
         ServerApi.getRoles(userId, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
