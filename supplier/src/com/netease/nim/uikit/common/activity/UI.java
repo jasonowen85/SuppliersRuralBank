@@ -70,8 +70,8 @@ public abstract class UI extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         //判断是否有sd权限 否则不让登陆
+        LogUtil.ui("activity:" + this.getClass().getSimpleName() +  " onResume()");
         if (Build.VERSION.SDK_INT >= 23) {
-            LogUtil.ui("activity: onResume" + this.getClass().getSimpleName());
             if (PermissionUtils.lacksPermission(this, PermissionUtils.PERMISSION_WRITE_EXTERNAL_STORAGE)
                     && !LoginActivity.class.getSimpleName().equals(this.getClass().getSimpleName())) {
 //                LogoutHelper.logout();
@@ -85,6 +85,7 @@ public abstract class UI extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
+        LogUtil.ui("activity:" + this.getClass().getSimpleName() + " onPause()");
     }
 
     @Override

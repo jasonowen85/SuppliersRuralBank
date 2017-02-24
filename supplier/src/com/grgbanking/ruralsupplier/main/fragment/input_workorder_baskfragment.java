@@ -37,6 +37,7 @@ import com.grgbanking.ruralsupplier.main.activity.input_confirm_complete_activit
 import com.grgbanking.ruralsupplier.main.activity.input_confirmation_delivery_activity;
 import com.grgbanking.ruralsupplier.main.activity.input_order_details_activity;
 import com.loopj.android.http.JsonHttpResponseHandler;
+import com.netease.nim.uikit.common.ui.dialog.EasyAlertDialogHelper;
 import com.netease.nim.uikit.common.util.log.LogUtil;
 import com.netease.nim.uikit.common.util.string.StringUtil;
 
@@ -231,14 +232,16 @@ public class input_workorder_baskfragment extends BaseFragment implements
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject obj) {
                 listView1.setResultSize(0);
                 listView1.onLoadComplete();
-                Toast.makeText(getActivity(), "获取数据异常", Toast.LENGTH_SHORT).show();
+                if(null != getActivity())
+                    Toast.makeText(getActivity(), "获取数据异常", Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onFailure(int statusCode, Header[] headers, String message, Throwable throwable) {
                 listView1.setResultSize(0);
                 listView1.onLoadComplete();
-                Toast.makeText(getActivity(), "获取数据异常", Toast.LENGTH_SHORT).show();
+                if(null != getActivity())
+                    Toast.makeText(getActivity(), "获取数据异常", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -268,12 +271,14 @@ public class input_workorder_baskfragment extends BaseFragment implements
 
             @Override
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject obj) {
-                Toast.makeText(getActivity(), "获取数据异常", Toast.LENGTH_SHORT).show();
+                if(null != getActivity())
+                    Toast.makeText(getActivity(), "获取数据异常", Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onFailure(int statusCode, Header[] headers, String message, Throwable throwable) {
-                Toast.makeText(getActivity(), "获取数据异常", Toast.LENGTH_SHORT).show();
+                if(null != getActivity())
+                    Toast.makeText(getActivity(), "获取数据异常", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -303,12 +308,14 @@ public class input_workorder_baskfragment extends BaseFragment implements
 
             @Override
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject obj) {
-                Toast.makeText(getActivity(), "获取数据异常", Toast.LENGTH_SHORT).show();
+                if(null != getActivity())
+                    Toast.makeText(getActivity(), "获取数据异常", Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onFailure(int statusCode, Header[] headers, String message, Throwable throwable) {
-                Toast.makeText(getActivity(), "获取数据异常", Toast.LENGTH_SHORT).show();
+                if(null != getActivity())
+                    Toast.makeText(getActivity(), "获取数据异常", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -360,12 +367,14 @@ public class input_workorder_baskfragment extends BaseFragment implements
 
             @Override
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject obj) {
-                Toast.makeText(getActivity(), "获取数据异常", Toast.LENGTH_SHORT).show();
+                if(null != getActivity())
+                    Toast.makeText(getActivity(), "获取数据异常", Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onFailure(int statusCode, Header[] headers, String message, Throwable throwable) {
-                Toast.makeText(getActivity(), "获取数据异常", Toast.LENGTH_SHORT).show();
+                if(null != getActivity())
+                    Toast.makeText(getActivity(), "获取数据异常", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -498,7 +507,18 @@ public class input_workorder_baskfragment extends BaseFragment implements
                             vHolder.iv_action1.setOnClickListener(new OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
-                                    closedOrder(datas.get(position).getId());
+                                    EasyAlertDialogHelper.createOkCancelDiolag(mContext, mContext.getString(R.string.helps), mContext.getString(R.string.confirm_close_order),
+                                            mContext.getString(R.string.close_order), mContext.getString(R.string.cancel), true, new EasyAlertDialogHelper.OnDialogActionListener() {
+                                                @Override
+                                                public void doCancelAction() {
+                                                    //什么都不干
+                                                }
+
+                                                @Override
+                                                public void doOkAction() {
+                                                    closedOrder(datas.get(position).getId());
+                                                }
+                                            }).show();
                                 }
                             });
                             vHolder.iv_action2.setOnClickListener(new OnClickListener() {
